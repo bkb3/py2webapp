@@ -1,0 +1,15 @@
+text_input = {
+    'Input sequence':'s',
+    'Test sequence': 't',
+}
+
+numerical_input = {
+    'Input number': 'x',
+}
+
+app_properties = {
+    'Name': 'Test long function',
+    'Description': 'Made using py2webapp',
+    'Author': 'github@bkb3'
+}
+

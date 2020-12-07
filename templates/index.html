@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="initial-scale=1, shrink-to-fit=no, width=device-width" name="viewport">
+    <meta name=description content="{{app_properties.Name}} - {{app_properties.Description}}">
+    <meta name=author content="{{app_properties.Author}}">
+    <title>{{app_properties.Name}}</title>
+    <link rel=icon href=static/images/favicon.png type=image/png sizes=16x16 />
+
+
+    <!-- CSS -->
+    <!-- Add Material font (Roboto) and Material icon as needed -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Add Material CSS, replace Bootstrap CSS -->
+    <link href="static/css/material/material.min.css" rel="stylesheet">
+    <link href="static/css/waves/waves.min.css" rel="stylesheet">
+    <link href="static/css/custom/custom.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <!-- Then Material JavaScript on top of Bootstrap JavaScript -->
+    <script src="static/js/material/material.min.js"></script>
+    <script src="static/js/waves/waves.min.js"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+    <script src="static/js/custom/custom.js"></script>
+
+
+    <nav class="navbar navbar-dark navbar-fixed-top" style="background-color: #355664;">
+        <a class="navbar-brand" href="/">
+            <span class="font-weight-bold">{{app_properties.Name}}</span>
+        </a>
+
+    </nav>
+
+    <div class="container-fluid" style="padding: 40px;">
+        <div class="p-5 mb-5">
+            <div class="col-auto " id="main-contents">
+
+
+                <!--Initial page-->
+                <div id="banner" class="collapse show">
+                    <form id="input-form" action={{ url_for('myapp') }} method="post">
+                        {% block container %}
+                        {% for key, val in text_input.items() %}
+                        <div class="form-group">
+                            <div class=floating-label>
+                                <label>{{key}}</label>
+                                <textarea input aria-describedby=input-sequence-help class="form-control" name={{val}}
+                                    id="key_{{val}}" placeholder="" type="text" rows=1 spellcheck=false required></textarea>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% for key, val in numerical_input.items() %}
+                        <div class="form-group">
+                            <div class=floating-label>
+                                <label>{{key}}</label>
+                                <input aria-describedby=input-sequence-help class="form-control" name={{val}} id="key_{{val}}"
+                                    placeholder="" type="number" rows=1 step="any" required />
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% endblock %}
+
+                        <br>
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-dark" type="submit" id="submit-btn">Submit</button>
+                        </div>
+                        <script type=text/javascript>
+                        let frm = $('#input-form');
+                        frm.submit(function(event) {
+                            if (event){
+                                event.preventDefault();
+                                afterSubmit();
+                                $.ajax({
+                                    type: frm.attr('method'),
+                                    url: frm.attr('action'),
+                                    data: frm.serialize(),
+                                    dataType: 'json',
+                                    success: function(data, status, jqXHR) {
+                                        $('#pbar').css("width", "5%");
+                                        parseResults(data, status);
+                                    },
+                                    error: function(data, status, jqXHR) {
+                                        failure(data, status);
+                                    },
+                                });
+                            }
+                            event.preventDefault();
+                        });
+                    </script>
+                    </form>
+                </div>
+
+                <!--Progress page-->
+                <div class="col-xl" id="progress-page">
+                    <div id="progress-console" class="collapse hide">
+                        <div class="card text-left shadow-4">
+                            <div class="card-header">
+                                Progress
+                            </div>
+                            <div class="card-body" id="console-body">
+                                <span class="text-monospace">Processing...</span>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%" id="pbar"></div>
+                                </div>
+                                <br />
+                                <div class="d-flex">
+                                    <div class="collapse hide" id="retry-btn-console">
+                                        <a href="#" class="btn btn-danger" onclick="location.reload(true);">Retry</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--Results page-->
+                <div class="collapse hide" id="results-page">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card text-left shadow-4">
+                                <div class="card-header">
+                                    Results
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title"></h5>
+                                    <div id="results-placeholder">
+
+                                    </div>
+                                    <br />
+                                    <div class="card-text" id="results-placeholder-errors"></div>
+                                </div>
+                                <div id="result_plot"></div>
+                                <div class="card-footer text-muted">
+                                    <a href="#" class="btn btn-dark" onclick="location.reload(true);">Retry</a>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+
+
+</body>
+
+</html>

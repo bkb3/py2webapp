@@ -1,0 +1,14 @@
+text_input = {
+    'RNA sequence':'s',
+}
+
+numerical_input = {
+    
+}
+
+app_properties = {
+    'Name': 'RNAfold wrapper',
+    'Description': 'Made using py2webapp',
+    'Author': 'github@bkb3'
+}
+
