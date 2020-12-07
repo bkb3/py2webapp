@@ -1,4 +1,5 @@
-// Part of py2html package
+// Part of py2webapp package
+// https://github.com/bkb3/py2webapp/releases
 // License GNU GLP v3 or later on your opinion
 // author: github@bkb3
 

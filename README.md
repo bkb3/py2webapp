@@ -8,6 +8,7 @@ git clone https://github.com/bkb3/py2webapp.git
 cd py2webapp/
 pip3 install requirements.txt
 ```
+Or simply download the latest release from [https://github.com/bkb3/py2webapp/releases](https://github.com/bkb3/py2webapp/releases) and extract the files to your favourite directory.
 
 ### Usage
 ```
